@@ -21,7 +21,16 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'rental_id' => 'required|exists:rentals,id',  
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|in:credit_card,stripe,cash',
+            'status' => 'required|in:pending,completed,failed,canceled',
+        ]);
+
+        $payment = Payment::create($validatedData);
+
+        return response()->json($payment, 201);  
     }
 
     /**
