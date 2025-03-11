@@ -72,6 +72,14 @@ class PaymentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $payment = Payment::find($id);
+
+        if (!$payment) {
+            return response()->json(['message' => 'Payment not found'], 404);
+        }
+
+        $payment->delete();
+
+        return response()->json(['message' => 'Payment deleted successfully']);
     }
 }
