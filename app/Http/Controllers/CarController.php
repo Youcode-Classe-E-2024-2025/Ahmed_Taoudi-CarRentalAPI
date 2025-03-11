@@ -55,7 +55,24 @@ class CarController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $car = Car::find($id);
+
+        if (!$car) {
+            return response()->json(['message' => 'Car not found'], 404);
+        }
+
+        $request->validate([
+            'make' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'year' => 'required|integer|digits:4',
+            'price' => 'required|numeric',
+            'status' => 'required|in:available,rented,maintenance',
+            'image' => 'nullable|url',
+        ]);
+
+        $car->update($request->all());
+
+        return response()->json($car);
     }
 
     /**
