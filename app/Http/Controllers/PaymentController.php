@@ -92,7 +92,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Rental not found'], 404);
         }
 
-        $payments = $rental->payments;
+        $payments = $rental->payment;
         return response()->json($payments);
     }
 }
