@@ -52,7 +52,19 @@ class PaymentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $payment = Payment::find($id);
+
+        if (!$payment) {
+            return response()->json(['message' => 'Payment not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'status' => 'required|in:pending,completed,failed,canceled',
+        ]);
+
+        $payment->update($validatedData);
+
+        return response()->json($payment);  
     }
 
     /**
