@@ -24,8 +24,103 @@ class CarController extends Controller
      */
     public function index()
     {
+        // i need pagination 
+        // dont use Car::paginate
         $cars = Car::all();
         return response()->json($cars);
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/cars/page/{page}",
+     *     summary="Paginate cars",
+     *     description="Fetch a paginated list of cars.",
+     *     operationId="getPaginatedCars",
+     *     tags={"Cars"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="path",
+     *         description="Page number",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully fetched paginated cars.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     ref="#/components/schemas/Car"
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="current_page",
+     *                 type="integer",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="total_pages",
+     *                 type="integer",
+     *                 example=10
+     *             ),
+     *             @OA\Property(
+     *                 property="total_items",
+     *                 type="integer",
+     *                 example=30
+     *             ),
+     *             @OA\Property(
+     *                 property="per_page",
+     *                 type="integer",
+     *                 example=3
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid page number.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Invalid page number"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page not found.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="No cars found on this page"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function paginate($page)
+    {
+
+        $perPage = 3;
+        $offset = ($page - 1) * $perPage;
+        $cars = Car::skip($offset)->take($perPage)->get();
+        $totalCars = Car::count();
+        $totalPages = ceil($totalCars / $perPage);
+        return response()->json([
+            'data' => $cars,
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+            'total_items' => $totalCars,
+            'per_page' => $perPage,
+        ]);
     }
 
     /**

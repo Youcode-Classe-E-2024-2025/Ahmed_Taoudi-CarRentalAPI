@@ -339,6 +339,96 @@
                 }
             }
         },
+        "/api/cars/page/{page}": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Paginate cars",
+                "description": "Fetch a paginated list of cars.",
+                "operationId": "getPaginatedCars",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "Page number",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched paginated cars.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Car"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "total_pages": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total_items": {
+                                            "type": "integer",
+                                            "example": 30
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid page number.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid page number"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Page not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No cars found on this page"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/cars/{id}": {
             "get": {
                 "tags": [

@@ -23,6 +23,7 @@ Route::prefix('auth')
     );
 
 Route::apiResource('cars', CarController::class);
+Route::get('cars/page/{page}', [CarController::class,'paginate']);
 Route::apiResource('rentals', RentalController::class);
 
 Route::get('users/{userId}/rentals', [RentalController::class, 'rentalsByUser']);
