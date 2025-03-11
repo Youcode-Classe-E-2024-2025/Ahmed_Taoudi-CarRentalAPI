@@ -54,7 +54,24 @@ class RentalController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $rental = Rental::find($id);
+
+        if (!$rental) {
+            return response()->json(['message' => 'Rental not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'user_id' => 'exists:users,id',
+            'car_id' => 'exists:cars,id',
+            'start_date' => 'date',
+            'end_date' => 'date|after:start_date',
+            'total_price' => 'numeric',
+            'status' => 'in:pending,active,completed,canceled',
+        ]);
+
+        $rental->update($validatedData);
+
+        return response()->json($rental);  
     }
 
     /**
