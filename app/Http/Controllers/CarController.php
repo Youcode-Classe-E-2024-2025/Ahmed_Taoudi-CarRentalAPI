@@ -62,11 +62,11 @@ class CarController extends Controller
         }
 
         $request->validate([
-            'make' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'year' => 'required|integer|digits:4',
-            'price' => 'required|numeric',
-            'status' => 'required|in:available,rented,maintenance',
+            'make' => 'string|max:255',
+            'model' => 'string|max:255',
+            'year' => 'integer|digits:4',
+            'price' => 'numeric',
+            'status' => 'in:available,rented,maintenance',
             'image' => 'nullable|url',
         ]);
 
