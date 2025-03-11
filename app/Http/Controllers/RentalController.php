@@ -79,6 +79,14 @@ class RentalController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $rental = Rental::find($id);
+
+        if (!$rental) {
+            return response()->json(['message' => 'Rental not found'], 404);
+        }
+
+        $rental->delete();
+
+        return response()->json(['message' => 'Rental deleted successfully']);
     }
 }
