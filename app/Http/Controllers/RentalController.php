@@ -21,7 +21,18 @@ class RentalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'car_id' => 'required|exists:cars,id',   
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date', 
+            'total_price' => 'required|numeric',
+            'status' => 'required|in:pending,active,completed,canceled',
+        ]);
+
+        $rental = Rental::create($validatedData);
+
+        return response()->json($rental, 201);  
     }
 
     /**
