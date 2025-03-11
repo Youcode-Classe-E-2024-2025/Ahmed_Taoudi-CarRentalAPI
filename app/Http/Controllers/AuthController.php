@@ -50,4 +50,13 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens->each(function ($token) {
+            $token->delete();
+        });
+
+        return response()->json(['message' => 'Déconnexion réussie']);
+    }
 }
