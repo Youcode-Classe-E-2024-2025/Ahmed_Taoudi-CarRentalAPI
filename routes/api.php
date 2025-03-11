@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\RentalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,7 @@ Route::prefix('auth')
     );
 
 Route::apiResource('cars', CarController::class);
+Route::apiResource('rentals', RentalController::class);
+
+Route::get('users/{userId}/rentals', [RentalController::class, 'rentalsByUser']);
+Route::get('cars/{carId}/rentals', [RentalController::class, 'rentalsByCar']);
