@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rental;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RentalController extends Controller
@@ -88,5 +89,17 @@ class RentalController extends Controller
         $rental->delete();
 
         return response()->json(['message' => 'Rental deleted successfully']);
+    }
+
+    public function rentalsByUser($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $rentals = $user->rentals;  
+        return response()->json($rentals);
     }
 }
