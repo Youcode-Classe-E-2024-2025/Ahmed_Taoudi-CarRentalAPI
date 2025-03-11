@@ -74,6 +74,21 @@ namespace App\Swagger;
  *         example="2025-03-10T12:00:00Z"
  *     )
  * )
+ * @OA\Schema(
+ *     schema="Car",
+ *     type="object",
+ *     required={"make", "model", "matricul", "year", "price", "status"},
+ *     @OA\Property(property="id", type="integer", description="Car ID", example=1),
+ *     @OA\Property(property="make", type="string", description="Car make", example="Toyota"),
+ *     @OA\Property(property="model", type="string", description="Car model", example="Corolla"),
+ *     @OA\Property(property="matricul", type="string", description="Car matriculation number", example="ABC123"),
+ *     @OA\Property(property="year", type="integer", description="Car year", example=2020),
+ *     @OA\Property(property="price", type="number", format="float", description="Price per day", example=50.0),
+ *     @OA\Property(property="status", type="string", description="Car status", enum={"available", "rented", "maintenance"}, example="available"),
+ *     @OA\Property(property="image", type="string", description="Image URL", example="https://example.com/car.jpg"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the car was created", example="2025-03-10T12:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the car was last updated", example="2025-03-10T12:00:00Z")
+ * )
  */
 
 class swagger{}
