@@ -25,9 +25,8 @@ class CarFactory extends Factory
             'model' => $this->faker->word,
             'matricul' => $this->faker->word,
             'year' => $this->faker->year,
-            'price_per_day' => $this->faker->randomFloat(2, 10, 100),
-            'status' => $this->faker->randomElement(['available', 'rented', 'maintenance']),
-            'color' => $this->faker->safeColorName,
+            'price' => $this->faker->randomFloat(2, 10, 100),
+            'status' => $this->faker->randomElement(['available', 'rented', 'maintenance'])
         ];
     }
 }
