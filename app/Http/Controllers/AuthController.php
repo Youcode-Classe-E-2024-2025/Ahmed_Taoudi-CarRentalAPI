@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-/**
- * @OA\Info(title="Car Rental API", version="1.0")
- */
 class AuthController extends Controller
 {
      /**
