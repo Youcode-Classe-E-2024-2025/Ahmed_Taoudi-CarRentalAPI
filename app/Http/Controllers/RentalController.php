@@ -10,16 +10,61 @@ use Illuminate\Http\Request;
 class RentalController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the rentals.
+     * 
+     * @OA\Get(
+     *     path="/api/rentals",
+     *     summary="Get all rentals",
+     *     tags={"Rentals"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of rentals",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Rental")
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
         $rentals = Rental::all();
         return response()->json($rentals);
     }
-
-    /**
-     * Store a newly created resource in storage.
+ /**
+     * Store a newly created rental.
+     * 
+     * @OA\Post(
+     *     path="/api/rentals",
+     *     summary="Create a new rental",
+     *     tags={"Rentals"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"user_id", "car_id", "start_date", "end_date", "total_price", "status"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="car_id", type="integer", example=1),
+     *             @OA\Property(property="start_date", type="string", format="date", example="2025-03-10"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2025-03-20"),
+     *             @OA\Property(property="total_price", type="number", format="float", example=250.00),
+     *             @OA\Property(property="status", type="string", enum={"pending", "active", "completed", "canceled"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Rental created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Rental")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Validation failed")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -38,7 +83,33 @@ class RentalController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified rental.
+     * 
+     * @OA\Get(
+     *     path="/api/rentals/{id}",
+     *     summary="Get a rental by ID",
+     *     tags={"Rentals"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Rental ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Rental details",
+     *         @OA\JsonContent(ref="#/components/schemas/Rental")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Rental not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Rental not found")
+     *         )
+     *     )
+     * )
      */
     public function show(string $id)
     {
@@ -52,7 +123,45 @@ class RentalController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified rental.
+     * 
+     * @OA\Put(
+     *     path="/api/rentals/{id}",
+     *     summary="Update an existing rental",
+     *     tags={"Rentals"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Rental ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="car_id", type="integer", example=1),
+     *             @OA\Property(property="start_date", type="string", format="date", example="2025-03-10"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2025-03-20"),
+     *             @OA\Property(property="total_price", type="number", format="float", example=250.00),
+     *             @OA\Property(property="status", type="string", enum={"pending", "active", "completed", "canceled"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Rental updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Rental")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Rental not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Rental not found")
+     *         )
+     *     )
+     * )
      */
     public function update(Request $request, string $id)
     {
@@ -75,9 +184,37 @@ class RentalController extends Controller
 
         return response()->json($rental);
     }
-
-    /**
-     * Remove the specified resource from storage.
+ /**
+     * Remove the specified rental.
+     * 
+     * @OA\Delete(
+     *     path="/api/rentals/{id}",
+     *     summary="Delete a rental",
+     *     tags={"Rentals"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Rental ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Rental deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Rental deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Rental not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Rental not found")
+     *         )
+     *     )
+     * )
      */
     public function destroy(string $id)
     {
@@ -92,6 +229,38 @@ class RentalController extends Controller
         return response()->json(['message' => 'Rental deleted successfully']);
     }
 
+    /**
+     * Get rentals by a specific user.
+     * 
+     * @OA\Get(
+     *     path="/api/users/{userId}/rentals/",
+     *     summary="Get rentals for a specific user",
+     *     tags={"Rentals"},
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of rentals",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Rental")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
+     */
     public function rentalsByUser($userId)
     {
         $user = User::find($userId);
@@ -103,6 +272,38 @@ class RentalController extends Controller
         $rentals = $user->rentals;
         return response()->json($rentals);
     }
+    /**
+     * Get rentals for a specific car.
+     * 
+     * @OA\Get(
+     *     path="/api/cars/{carId}/rentals",
+     *     summary="Get rentals for a specific car",
+     *     tags={"Rentals"},
+     *     @OA\Parameter(
+     *         name="carId",
+     *         in="path",
+     *         description="Car ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of rentals",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Rental")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Car not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Car not found")
+     *         )
+     *     )
+     * )
+     */
     public function rentalsByCar($carId)
     {
         $car = Car::find($carId);
