@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
 use App\Models\Rental;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class RentalController extends Controller
      */
     public function index()
     {
-        $rentals = Rental::all(); 
+        $rentals = Rental::all();
         return response()->json($rentals);
     }
 
@@ -24,16 +25,16 @@ class RentalController extends Controller
     {
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'car_id' => 'required|exists:cars,id',   
+            'car_id' => 'required|exists:cars,id',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date', 
+            'end_date' => 'required|date|after:start_date',
             'total_price' => 'required|numeric',
             'status' => 'required|in:pending,active,completed,canceled',
         ]);
 
         $rental = Rental::create($validatedData);
 
-        return response()->json($rental, 201);  
+        return response()->json($rental, 201);
     }
 
     /**
@@ -72,7 +73,7 @@ class RentalController extends Controller
 
         $rental->update($validatedData);
 
-        return response()->json($rental);  
+        return response()->json($rental);
     }
 
     /**
@@ -99,7 +100,18 @@ class RentalController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $rentals = $user->rentals;  
+        $rentals = $user->rentals;
+        return response()->json($rentals);
+    }
+    public function rentalsByCar($carId)
+    {
+        $car = Car::find($carId);
+
+        if (!$car) {
+            return response()->json(['message' => 'Car not found'], 404);
+        }
+
+        $rentals = $car->rentals; 
         return response()->json($rentals);
     }
 }
