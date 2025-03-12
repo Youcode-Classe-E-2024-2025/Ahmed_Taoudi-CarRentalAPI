@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
+    public function __construct()
+    {
+
+    }
     /**
      * @OA\Get(
      *     path="/api/cars",
@@ -127,6 +131,7 @@ class CarController extends Controller
      * @OA\Post(
      *     path="/api/cars",
      *     summary="Create a new car",
+     *     security={{"sanctum": {}}},
      *     tags={"Cars"},
      *     @OA\RequestBody(
      *         required=true,
@@ -206,6 +211,7 @@ class CarController extends Controller
     /**
      * @OA\Put(
      *     path="/api/cars/{id}",
+     *     security={{"sanctum": {}}},
      *     summary="Update a car by ID",
      *     tags={"Cars"},
      *     @OA\Parameter(
@@ -264,6 +270,7 @@ class CarController extends Controller
      * @OA\Delete(
      *     path="/api/cars/{id}",
      *     summary="Delete a car by ID",
+     *     security={{"sanctum": {}}},
      *     tags={"Cars"},
      *     @OA\Parameter(
      *         name="id",

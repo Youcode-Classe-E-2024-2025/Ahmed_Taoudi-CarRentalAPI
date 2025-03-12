@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\Payment;
 use App\Models\Rental;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class RentalController extends Controller
 {
@@ -31,7 +35,7 @@ class RentalController extends Controller
         $rentals = Rental::all();
         return response()->json($rentals);
     }
- /**
+    /**
      * Store a newly created rental.
      * 
      * @OA\Post(
@@ -78,8 +82,46 @@ class RentalController extends Controller
         ]);
 
         $rental = Rental::create($validatedData);
+        $car = Car::findOrFail($validatedData['car_id']);
+        $amount = $validatedData['total_price'];
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        return response()->json($rental, 201);
+        try {
+            $session = StripeSession::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency'     => 'usd',
+                        'product_data' => [
+                            'name'        => 'Car Rental',
+                            'description' => 'Rental for ' . $car->make . ' ' . $car->model,
+                        ],
+                        'unit_amount' => $amount * 100, // Stripe uses cents
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode'         => 'payment',
+                'success_url'  => route('checkout.success', ['session_id' => '{CHECKOUT_SESSION_ID}']),
+                'cancel_url'   => route('checkout.cancel'),
+                'metadata'     => [
+                    'rental_id' => $rental->id,
+                ],
+            ]);
+
+            Payment::create([
+                'rental_id' => $rental->id,
+                'amount'    => $amount,
+                'payment_method'=> 'stripe',
+                'status'=> 'pending'
+            ]);
+            // return redirect($session->url);
+            return response()->json([
+                'checkout_url' => $session->url,
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        // return response()->json($rental, 201);
     }
 
     /**
@@ -184,7 +226,7 @@ class RentalController extends Controller
 
         return response()->json($rental);
     }
- /**
+    /**
      * Remove the specified rental.
      * 
      * @OA\Delete(
@@ -312,7 +354,7 @@ class RentalController extends Controller
             return response()->json(['message' => 'Car not found'], 404);
         }
 
-        $rentals = $car->rentals; 
+        $rentals = $car->rentals;
         return response()->json($rentals);
     }
 }

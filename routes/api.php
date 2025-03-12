@@ -22,7 +22,13 @@ Route::prefix('auth')
         }
     );
 
-Route::apiResource('cars', CarController::class);
+Route::apiResource('cars', CarController::class)->only(['index', 'show']);
+
+Route::prefix('cars')->middleware('auth:sanctum')->group(function () {
+    Route::post('/', [CarController::class, 'store']);
+    Route::put('/{car}', [CarController::class, 'update']);
+    Route::delete('/{car}', [CarController::class, 'destroy']);
+});
 Route::get('cars/page/{page}', [CarController::class,'paginate']);
 Route::apiResource('rentals', RentalController::class);
 
@@ -31,4 +37,6 @@ Route::get('cars/{carId}/rentals', [RentalController::class, 'rentalsByCar']);
 
 
 Route::apiResource('payments', PaymentController::class);
-Route::get('rentals/{rentalId}/payments', [PaymentController::class, 'paymentsByRental']);
+
+Route::get('checkout/success', [PaymentController::class, 'success'])->name('checkout.success');
+Route::get('checkout/cancel', [PaymentController::class, 'cancel'])->name('checkout.cancel');
