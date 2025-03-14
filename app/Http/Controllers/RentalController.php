@@ -41,6 +41,7 @@ class RentalController extends Controller
      * @OA\Post(
      *     path="/api/rentals",
      *     summary="Create a new rental",
+     *     security={{"sanctum": {}}},
      *     tags={"Rentals"},
      *     @OA\RequestBody(
      *         required=true,
@@ -101,7 +102,7 @@ class RentalController extends Controller
                     'quantity' => 1,
                 ]],
                 'mode'         => 'payment',
-                'success_url'  => route('checkout.success', ['session_id' => '{CHECKOUT_SESSION_ID}']),
+                'success_url'  => route('checkout.success'),
                 'cancel_url'   => route('checkout.cancel'),
                 'metadata'     => [
                     'rental_id' => $rental->id,
@@ -171,6 +172,7 @@ class RentalController extends Controller
      *     path="/api/rentals/{id}",
      *     summary="Update an existing rental",
      *     tags={"Rentals"},
+     *     security={{"sanctum": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -233,6 +235,7 @@ class RentalController extends Controller
      *     path="/api/rentals/{id}",
      *     summary="Delete a rental",
      *     tags={"Rentals"},
+     *     security={{"sanctum": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -357,4 +360,6 @@ class RentalController extends Controller
         $rentals = $car->rentals;
         return response()->json($rentals);
     }
+
+
 }

@@ -230,4 +230,12 @@ class PaymentController extends Controller
         $payments = $rental->payment;
         return response()->json($payments);
     }
+    public function success(){
+        return response()->json(['message' => 'success '], 200);
+    }
+
+    public function cancel(){
+        return response()->json(['message' => 'cancel '], 200);
+        
+    }
 }

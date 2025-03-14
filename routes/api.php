@@ -29,8 +29,16 @@ Route::prefix('cars')->middleware('auth:sanctum')->group(function () {
     Route::put('/{car}', [CarController::class, 'update']);
     Route::delete('/{car}', [CarController::class, 'destroy']);
 });
+
 Route::get('cars/page/{page}', [CarController::class,'paginate']);
-Route::apiResource('rentals', RentalController::class);
+
+Route::apiResource('rentals', RentalController::class)->only(['index', 'show']);
+
+Route::prefix('rentals')->middleware('auth:sanctum')->group(function () {
+    Route::post('/', [RentalController::class, 'store']);
+    Route::put('/{rental}', [RentalController::class, 'update']);
+    Route::delete('/{rental}', [RentalController::class, 'destroy']);
+});
 
 Route::get('users/{userId}/rentals', [RentalController::class, 'rentalsByUser']);
 Route::get('cars/{carId}/rentals', [RentalController::class, 'rentalsByCar']);
